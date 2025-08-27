@@ -38,6 +38,36 @@ def create_hotel(
     return {'status': 'OK'}
 
 
+@app.put('/hotels/{hotel_id}')
+def edit_hotel(
+        hotel_id: int,
+        title: str = Body(),
+        city: str = Body()
+):
+    for hotel in hotels:
+        if hotel['id'] == hotel_id:
+            hotel['title'] = title
+            hotel['city'] = city
+            break
+    return {'status': 'OK'}
+
+
+@app.patch('/hotels/{hotel_id}')
+def edit_hotel_parameter(
+    hotel_id: int,
+    title: str | None = Body(default=None),
+    city: str | None = Body(default=None)
+):
+    for hotel in hotels:
+        if hotel['id'] == hotel_id:
+            if title:
+                hotel['title'] = title
+            if city:
+                hotel['city'] = city
+            break
+    return {'status': 'OK'}
+
+
 @app.delete('/hotels/{hotel_id}')
 def delete_hotel(hotel_id: int):
     global hotels
