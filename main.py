@@ -52,7 +52,9 @@ def edit_hotel(
     return {'status': 'OK'}
 
 
-@app.patch('/hotels/{hotel_id}')
+@app.patch('/hotels/{hotel_id}',
+           summary='Частичное обновление данных отеля',
+           description='Можно поменять один или несколько параметров')
 def edit_hotel_parameter(
     hotel_id: int,
     title: str | None = Body(default=None),
