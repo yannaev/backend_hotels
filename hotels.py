@@ -1,5 +1,5 @@
 from fastapi import Query, APIRouter, Body
-
+from dependencies import PaginationDep
 from schemas.hotels import Hotel, HotelPATCH
 
 router = APIRouter(prefix='/hotels', tags=['Отели'])
@@ -24,10 +24,9 @@ hotels = [
             summary='Получить список отелей',
             description='Получить список всех отелей, либо отель по ID, либо отель по названию')
 def get_hotels(
+        pagination: PaginationDep,
         id: int | None = Query(default=None, description='ID отеля'),
-        title:str | None = Query(None, description='Название отеля'),
-        page: int | None = Query(default=1, description='Номер страницы'),
-        per_page: int | None = Query(default=5, description='Количество на странице')
+        title: str | None = Query(None, description='Название отеля')
 ):
     hotels_ = []
     for hotel in hotels:
@@ -37,7 +36,7 @@ def get_hotels(
             continue
         hotels_.append(hotel)
 
-    return hotels_[(page - 1) * per_page:page * per_page]
+    return hotels_[(pagination.page - 1) * pagination.per_page:pagination.page * pagination.per_page]
 
 
 # body, request body
