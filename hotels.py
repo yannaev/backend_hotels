@@ -1,5 +1,6 @@
-from fastapi import Query, Body, Path, APIRouter
-from pydantic import BaseModel
+from fastapi import Query, APIRouter
+
+from schemas.hotels import Hotel, HotelPATCH
 
 router = APIRouter(prefix='/hotels', tags=['Отели'])
 
@@ -26,11 +27,6 @@ def get_hotels(
         hotels_.append(hotel)
 
     return hotels_
-
-
-class Hotel(BaseModel):
-    title: str
-    city: str
 
 
 # body, request body
@@ -64,15 +60,14 @@ def edit_hotel(hotel_id: int, hotel_data: Hotel):
            description='Можно поменять один или несколько параметров')
 def edit_hotel_parameter(
     hotel_id: int,
-    title: str | None = Body(default=None),
-    city: str | None = Body(default=None)
+    hotel_data: HotelPATCH
 ):
     for hotel in hotels:
         if hotel['id'] == hotel_id:
-            if title:
-                hotel['title'] = title
-            if city:
-                hotel['city'] = city
+            if hotel_data.title:
+                hotel['title'] = hotel_data.title
+            if hotel_data.city:
+                hotel['city'] = hotel_data.city
             break
     return {'status': 'OK'}
 
