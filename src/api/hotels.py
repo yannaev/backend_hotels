@@ -12,20 +12,21 @@ router = APIRouter(prefix='/hotels', tags=['Отели'])
 
 @router.get('',
             summary='Получить список отелей',
-            description='Получить список всех отелей, либо отель по ID, либо отель по названию')
+            description='Получить список всех отелей, либо отель по названию, по локации')
 async def get_hotels(
         pagination: PaginationDep,
-        id: int | None = Query(default=None, description='ID отеля'),
-        title: str | None = Query(None, description='Название отеля')
+        title: str | None = Query(None, description='Название отеля'),
+        location: str | None = Query(None, description='Локация отеля')
 ):
     per_page = pagination.per_page or 5
     async with async_session_maker() as session:
         query = select(HotelsOrm)
 
-        if id:
-            query = query.filter_by(id=id)
         if title:
             query = query.filter_by(title=title)
+
+        if location:
+            query = query.filter(HotelsOrm.location.ilike(f'%{location}%'))
 
         query = (
             query
@@ -35,8 +36,6 @@ async def get_hotels(
         result = await session.execute(query)
         hotels_ = result.scalars().all()
         return hotels_
-
-    # return hotels_[(pagination.page - 1) * pagination.per_page:pagination.page * pagination.per_page]
 
 
 # body, request body
