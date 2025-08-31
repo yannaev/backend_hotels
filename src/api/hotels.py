@@ -23,10 +23,10 @@ async def get_hotels(
         query = select(HotelsOrm)
 
         if title:
-            query = query.filter(HotelsOrm.title.ilike(f'%{title}%'))
+            query = query.filter(HotelsOrm.title.ilike(f'%{title.strip()}%'))
 
         if location:
-            query = query.filter(HotelsOrm.location.ilike(f'%{location}%'))
+            query = query.filter(HotelsOrm.location.ilike(f'%{location.strip()}%'))
 
         query = (
             query
