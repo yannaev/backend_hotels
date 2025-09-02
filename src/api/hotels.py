@@ -1,6 +1,5 @@
 from fastapi import Query, APIRouter, Body
 
-from sqlalchemy import insert, select
 
 from src.api.dependencies import PaginationDep
 from src.database import async_session_maker, engine
@@ -60,12 +59,10 @@ async def create_hotel(hotel_data: Hotel = Body(openapi_examples={
 @router.put('/{hotel_id}',
             summary='Изменить отель',
             description='Изменить отель целиком')
-def edit_hotel(hotel_id: int, hotel_data: Hotel):
-    for hotel in hotels:
-        if hotel['id'] == hotel_id:
-            hotel['title'] = hotel_data.title
-            hotel['city'] = hotel_data.city
-            break
+async def edit_hotel(hotel_id: int, hotel_data: Hotel):
+    async with async_session_maker() as session:
+        await HotelsRepository(session).update(id=hotel_id, data=hotel_data)
+        await session.commit()
     return {'status': 'OK'}
 
 
@@ -76,6 +73,7 @@ def edit_hotel_parameter(
     hotel_id: int,
     hotel_data: HotelPATCH
 ):
+    global hotels
     for hotel in hotels:
         if hotel['id'] == hotel_id:
             if hotel_data.title:
@@ -89,7 +87,8 @@ def edit_hotel_parameter(
 @router.delete('/{hotel_id}',
                summary='Удалить отель',
                description='Удалить отель из базы по ID')
-def delete_hotel(hotel_id: int):
-    global hotels
-    hotels = [hotel for hotel in hotels if hotel['id'] != hotel_id]
+async def delete_hotel(hotel_id: int):
+    async with async_session_maker() as session:
+        await HotelsRepository(session).delete(id=hotel_id)
+        await session.commit()
     return {'status': 'OK'}
