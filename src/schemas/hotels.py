@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, ConfigDict
 
 
 class HotelAdd(BaseModel):
-    title: str
+    title: str = Field(max_length=100)
     location: str
 
 
@@ -13,5 +13,5 @@ class Hotel(HotelAdd):
 
 
 class HotelPATCH(BaseModel):
-    title: str | None = Field(None)
+    title: str | None = Field(None, max_length=100)
     location: str | None = Field(None)
