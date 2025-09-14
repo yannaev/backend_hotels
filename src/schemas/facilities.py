@@ -11,3 +11,14 @@ class Facility(FacilityAdd):
     model_config = {
         "from_attributes": True
     }
+
+
+class RoomFacilityAdd(BaseModel):
+    room_id: int
+    facility_id: int
+
+
+class RoomFacility(RoomFacilityAdd):
+    id: int
+    room_id: int
+    facility_id: int
