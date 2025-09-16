@@ -55,6 +55,9 @@ async def update_room(hotel_id: int, room_id: int, room_data: RoomAddRequest, db
     _room_data = RoomAdd(hotel_id=hotel_id, **room_data.model_dump())
     try:
         await db.rooms.update(data=_room_data, id=room_id)
+
+        await db.rooms_facilities.update_facilities(room_id=room_id, facilities_ids=room_data.facilities_ids)
+
         await db.commit()
     except IntegrityError:
         raise HTTPException(status_code=404, detail='Отель не найден')
@@ -65,8 +68,14 @@ async def update_room(hotel_id: int, room_id: int, room_data: RoomAddRequest, db
               summary='Частичное обноление данных номера отеля',
               description='Обновить один или несколько параметров номера отеля')
 async def edit_room_parameter(hotel_id: int, room_id: int, room_data: RoomPatchRequest, db: DBDep):
-    _room_data = RoomPatch(hotel_id=hotel_id, **room_data.model_dump(exclude_unset=True))
+    _room_data_dict = room_data.model_dump(exclude_unset=True)
+    _room_data = RoomPatch(hotel_id=hotel_id, **_room_data_dict)
+
     await db.rooms.update(data=_room_data, id=room_id, hotel_id=hotel_id, exclude_unset=True)
+
+    if "facilities_ids" in _room_data_dict:
+        await db.rooms_facilities.update_facilities(room_id=room_id, facilities_ids=room_data.facilities_ids)
+
     await db.commit()
     return {'status': 'OK'}
 
