@@ -8,10 +8,6 @@ class FacilityAdd(BaseModel):
 class Facility(FacilityAdd):
     id: int
 
-    model_config = {
-        "from_attributes": True
-    }
-
 
 class RoomFacilityAdd(BaseModel):
     room_id: int

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field
 
 from src.schemas.facilities import Facility
 
@@ -21,8 +21,6 @@ class RoomAdd(BaseModel):
 
 class Room(RoomAdd):
     id: int
-
-    model_config = ConfigDict(from_attributes=True)
 
 class RoomWithRels(Room):
     facilities: list[Facility]
