@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, HTTPException
+from fastapi import APIRouter, UploadFile, HTTPException, BackgroundTasks
 import aiofiles
 from pathlib import Path
 from PIL import Image
@@ -11,7 +11,7 @@ router = APIRouter(prefix="/images", tags=["Изображения"])
 
 
 @router.post('', summary="Загрузить изображение")
-async def upload_image(file: UploadFile):
+async def upload_image(file: UploadFile, background_tasks: BackgroundTasks):
     head = await file.read()
 
     if len(head) > 5 * 1024 * 1024:
@@ -26,6 +26,7 @@ async def upload_image(file: UploadFile):
     async with aiofiles.open(image_path, "wb") as out_file:
         await out_file.write(head)
 
-    resize_image.delay(str(image_path))
+    #resize_image.delay(str(image_path))
+    background_tasks.add_task(resize_image, str(image_path))
 
     return {'status': 'OK'}
