@@ -22,22 +22,17 @@ async def setup_database(check_test_mode):
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 
+    with open("tests/mock_hotels.json", encoding="utf-8") as file_hotels:
+        hotels = json.load(file_hotels)
+    with open("tests/mock_rooms.json", encoding="utf-8") as file_rooms:
+        rooms = json.load(file_rooms)
 
-@pytest.fixture(scope="session", autouse=True)
-async def insert_mock_data(setup_database):
-    with open("tests/mock_hotels.json", "r", encoding="utf-8") as f:
-        hotels_data = json.load(f)
-
-    with open("tests/mock_rooms.json", "r", encoding="utf-8") as f:
-        rooms_data = json.load(f)
+    hotels = [HotelAdd.model_validate(hotel) for hotel in hotels]
+    rooms = [RoomAdd.model_validate(room) for room in rooms]
 
     async with DBManager(session_factory=async_session_maker_null_pull) as db:
-        for hotel in hotels_data:
-            await db.hotels.add(HotelAdd(**hotel))
-
-        for room in rooms_data:
-            await db.rooms.add(RoomAdd(**room))
-
+        await db.hotels.add_bulk(hotels)
+        await db.rooms.add_bulk(rooms)
         await db.commit()
 
 
