@@ -3,7 +3,8 @@ from datetime import date
 from src.schemas.bookings import BookingAdd
 
 
-async def test_add_booking(db):
+async def test_booking_crud(db):
+    #create booking
     user_id = (await db.users.get_all())[0].id
     room_id = (await db.rooms.get_all())[0].id
     booking_data = BookingAdd(
@@ -14,4 +15,14 @@ async def test_add_booking(db):
         price=100
     )
     await db.bookings.add(booking_data)
+
+    #read booking
+    await db.bookings.get_filtered(user_id=user_id)
+
+    #update booking
+    await db.bookings.update(booking_data)
+
+    #delete booking
+    await db.bookings.delete(user_id=user_id)
+
     await db.commit()
