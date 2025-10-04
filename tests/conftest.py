@@ -74,7 +74,7 @@ async def register_user(setup_database, ac):
 
 
 @pytest.fixture(scope="session", autouse=True)
-async def authenticated_ac(ac):
+async def authenticated_ac(register_user, ac):
     response = await ac.post(
         "/auth/login",
         json={
