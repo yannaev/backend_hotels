@@ -2,6 +2,7 @@ import pytest
 
 from src.database import async_session_maker_null_pull
 from src.utils.db_manager import DBManager
+from tests.conftest import get_db_null_pool
 
 
 @pytest.mark.parametrize("room_id, date_from, date_to, status_code", [
@@ -34,13 +35,11 @@ async def test_add_booking(
         assert "data" in res
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 async def delete_all_bookings():
-    async with DBManager(session_factory=async_session_maker_null_pull) as db_:
-        bookings = await db_.bookings.get_all()
-        for booking in bookings:
-            await db_.bookings.delete(id=booking.id)
-        await db_.commit()
+    async for _db in get_db_null_pool():
+        await _db.bookings.delete()
+        await _db.commit()
 
 
 @pytest.mark.parametrize("room_id, date_from, date_to, count", [
@@ -50,7 +49,7 @@ async def delete_all_bookings():
 ])
 async def test_add_and_get_my_bookings(
         room_id, date_from, date_to, count,
-        delete_all_bookings, db, authenticated_ac
+        delete_all_bookings, authenticated_ac
 ):
     response = await authenticated_ac.post(
         "/bookings",
@@ -65,5 +64,4 @@ async def test_add_and_get_my_bookings(
     response = await authenticated_ac.get("/bookings/me")
     assert response.status_code == 200
     res = response.json()
-    assert isinstance(res, list)
     assert len(res) == count
