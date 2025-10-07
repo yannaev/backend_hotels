@@ -27,11 +27,16 @@ async def register_user(db: DBDep, data: UserRequestAdd = Body(openapi_examples=
     },
 
 })):
-    hashed_password = AuthService().hash_password(data.password)
-    new_user_data = UserAdd(email=data.email, hashed_password=hashed_password)
-    await db.users.add(new_user_data)
-    await db.commit()
+    try:
+        hashed_password = AuthService().hash_password(data.password)
+        new_user_data = UserAdd(email=data.email, hashed_password=hashed_password)
+        await db.users.add(new_user_data)
+        await db.commit()
+    except:
+        raise HTTPException(status_code=400, detail='Пользователь с таким email уже существует')
+
     return {'status': 'OK'}
+
 
 
 @router.post('/login')

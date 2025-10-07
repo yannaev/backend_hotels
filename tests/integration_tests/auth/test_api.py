@@ -3,43 +3,45 @@ import pytest
 
 @pytest.mark.parametrize("email, password, status_code", [
     ('ivan@me.com', '1234', 200),
+    ('ivan@me.com', '1234', 400),
     ('sss@kkf.com', 'abcd', 200),
     ('invalid-email', '1234', 422),
     ])
-async def test_register_user(email, password, status_code, ac):
-    register_response = await ac.post(
+async def test_auth_flow(email: str, password: str, status_code: int, ac):
+    # /register
+    resp_register = await ac.post(
         "/auth/register",
         json={
             "email": email,
-            "password": password
+            "password": password,
         }
     )
-    assert register_response.status_code == status_code
+    assert resp_register.status_code == status_code
+    if status_code != 200:
+        return
 
-    login_response = await ac.post(
+    # /login
+    resp_login = await ac.post(
         "/auth/login",
         json={
             "email": email,
-            "password": password
+            "password": password,
         }
     )
-    if status_code == 200:
-        assert login_response.status_code == 200
-        assert ac.cookies['access_token']
-    else:
-        assert login_response.status_code == 422
+    assert resp_login.status_code == 200
+    assert ac.cookies["access_token"]
+    assert "access_token" in resp_login.json()
 
-    me_response = await ac.get("/auth/me")
-    if status_code == 200:
-        assert me_response.status_code == 200
-        res = me_response.json()
-        assert isinstance(res, dict)
-        assert "id" in res
-        assert "email" in res
-        assert res["email"] == email
-    else:
-        assert me_response.status_code == 401
+    # /me
+    resp_me = await ac.get("/auth/me")
+    assert resp_me.status_code == 200
+    user = resp_me.json()
+    assert user["email"] == email
+    assert "id" in user
+    assert "password" not in user
+    assert "hashed_password" not in user
 
-    logout_response = await ac.post('/auth/logout')
-    assert logout_response.status_code == 200
-    assert 'access_token' not in ac.cookies
+    # /logout
+    resp_logout = await ac.post("/auth/logout")
+    assert resp_logout.status_code == 200
+    assert "access_token" not in ac.cookies
