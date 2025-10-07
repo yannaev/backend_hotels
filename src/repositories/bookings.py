@@ -31,4 +31,4 @@ class BookingsRepository(BaseRepository):
             booking = await self.add(booking_data)
             return booking
         else:
-            raise HTTPException(status_code=409, detail='Нет свободных номеров на эти даты')
+            raise HTTPException(status_code=500, detail='Нет свободных номеров на эти даты')
