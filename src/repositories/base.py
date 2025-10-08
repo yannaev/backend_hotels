@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 from sqlalchemy import select, insert, delete, update
 
 from src.repositories.mappers.base import DataMapper

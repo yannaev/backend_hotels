@@ -1,7 +1,5 @@
 import pytest
 
-from src.database import async_session_maker_null_pull
-from src.utils.db_manager import DBManager
 from tests.conftest import get_db_null_pool
 
 
@@ -18,7 +16,6 @@ async def test_add_booking(
         room_id, date_from, date_to, status_code,
         db, authenticated_ac
 ):
-    # room_id = (await db.rooms.get_all())[0].id
     response = await authenticated_ac.post(
         "/bookings",
         json={

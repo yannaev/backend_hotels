@@ -1,3 +1,4 @@
+# ruff: noqa: E402
 import pytest
 import json
 
@@ -11,7 +12,7 @@ from src.api.dependencies import get_db
 from src.config import settings
 from src.database import Base, engine_null_pool, async_session_maker_null_pull
 from src.main import app
-from src.models import *
+from src.models import * # noqa
 from src.schemas.hotels import HotelAdd
 from src.schemas.rooms import RoomAdd
 from src.utils.db_manager import DBManager
@@ -75,7 +76,7 @@ async def register_user(setup_database, ac):
 
 @pytest.fixture(scope="session")
 async def authenticated_ac(register_user, ac):
-    response = await ac.post(
+    await ac.post(
         "/auth/login",
         json={
             "email": "kot@pes.com",
