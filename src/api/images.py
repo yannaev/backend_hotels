@@ -10,7 +10,7 @@ from src.tasks.tasks import resize_image
 router = APIRouter(prefix="/images", tags=["Изображения"])
 
 
-@router.post('', summary="Загрузить изображение")
+@router.post("", summary="Загрузить изображение")
 async def upload_image(file: UploadFile, background_tasks: BackgroundTasks):
     head = await file.read()
 
@@ -26,7 +26,7 @@ async def upload_image(file: UploadFile, background_tasks: BackgroundTasks):
     async with aiofiles.open(image_path, "wb") as out_file:
         await out_file.write(head)
 
-    #resize_image.delay(str(image_path))
+    # resize_image.delay(str(image_path))
     background_tasks.add_task(resize_image, str(image_path))
 
-    return {'status': 'OK'}
+    return {"status": "OK"}

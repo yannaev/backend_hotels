@@ -23,7 +23,8 @@ class BookingsRepository(BaseRepository):
         rooms_ids_to_get = rooms_ids_for_booking(
             date_from=booking_data.date_from,
             date_to=booking_data.date_to,
-            hotel_id=hotel_id)
+            hotel_id=hotel_id,
+        )
         rooms_ids_to_book_res = await self.session.execute(rooms_ids_to_get)
         rooms_ids_to_book = rooms_ids_to_book_res.scalars().all()
 
@@ -31,4 +32,4 @@ class BookingsRepository(BaseRepository):
             booking = await self.add(booking_data)
             return booking
         else:
-            raise HTTPException(status_code=500, detail='Нет свободных номеров на эти даты')
+            raise HTTPException(status_code=500, detail="Нет свободных номеров на эти даты")

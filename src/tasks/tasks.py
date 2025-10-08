@@ -11,15 +11,15 @@ from src.utils.db_manager import DBManager
 
 @celery_instance.task
 def test_task():
-    print('Task started')
+    print("Task started")
     sleep(5)
-    print('Task completed')
+    print("Task completed")
 
 
-#@celery_instance.task
+# @celery_instance.task
 def resize_image(image_path: str):
     sizes = [1000, 500, 200]
-    output_folder = 'src/static/images'
+    output_folder = "src/static/images"
 
     # Открываем изображение
     img = Image.open(image_path)
@@ -31,7 +31,9 @@ def resize_image(image_path: str):
     # Проходим по каждому размеру
     for size in sizes:
         # Сжимаем изображение
-        img_resized = img.resize((size, int(img.height * (size / img.width))), Image.Resampling.LANCZOS)
+        img_resized = img.resize(
+            (size, int(img.height * (size / img.width))), Image.Resampling.LANCZOS
+        )
 
         # Формируем имя нового файла
         new_file_name = f"{name}_{size}px{ext}"
@@ -46,13 +48,13 @@ def resize_image(image_path: str):
 
 
 async def get_bookings_with_today_checkin_helper():
-    print('Я запускаюсь')
+    print("Я запускаюсь")
     async with DBManager(session_factory=async_session_maker_null_pull) as db:
         bookings = await db.bookings.get_bookings_with_today_checkin()
-        print(f'{bookings=}')
+        print(f"{bookings=}")
 
 
-@celery_instance.task(name='booking_today_checkin')
+@celery_instance.task(name="booking_today_checkin")
 def send_emails_to_users_with_today_checkin():
     print("Проверка бронирований на сегодня и отправка email пользователям")
     asyncio.run(get_bookings_with_today_checkin_helper())

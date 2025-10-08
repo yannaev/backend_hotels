@@ -50,5 +50,5 @@ app.include_router(router_facilities)
 app.include_router(router_images)
 
 
-if __name__ == '__main__':
-    uvicorn.run('main:app', reload=True)
+if __name__ == "__main__":
+    uvicorn.run("main:app", reload=True)
