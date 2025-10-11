@@ -1,9 +1,9 @@
 from pydantic import BaseModel
 from sqlalchemy import select, insert, delete, update
-from sqlalchemy.exc import NoResultFound
+from sqlalchemy.exc import NoResultFound, IntegrityError
 
 from src.repositories.mappers.base import DataMapper
-from src.exceptions import ObjectNotFoundException
+from src.exceptions import ObjectNotFoundException, IntegrityErrorException
 
 
 class BaseRepository:
@@ -30,8 +30,6 @@ class BaseRepository:
         return self.mapper.map_to_domain_entity(model)
 
     async def get_one(self, **filter_by):
-        #asyncpg.exceptions.DataError
-
         query = select(self.model).filter_by(**filter_by)
         result = await self.session.execute(query)
         try:
@@ -42,7 +40,10 @@ class BaseRepository:
 
     async def add(self, data: BaseModel):
         add_data_stmt = insert(self.model).values(**data.model_dump()).returning(self.model)
-        result = await self.session.execute(add_data_stmt)
+        try:
+            result = await self.session.execute(add_data_stmt)
+        except IntegrityError:
+            raise IntegrityErrorException
         model = result.scalars().one()
         return self.mapper.map_to_domain_entity(model)
 
@@ -53,6 +54,7 @@ class BaseRepository:
         await self.session.execute(add_data_stmt)
 
     async def update(self, data: BaseModel, exclude_unset: bool = False, **filter_by) -> None:
+        await self.get_one(**filter_by)
         update_data_stmt = (
             update(self.model)
             .filter_by(**filter_by)
@@ -61,5 +63,6 @@ class BaseRepository:
         await self.session.execute(update_data_stmt)
 
     async def delete(self, **filter_by) -> None:
+        await self.get_one(**filter_by)
         delete_stmt = delete(self.model).filter_by(**filter_by)
         await self.session.execute(delete_stmt)
