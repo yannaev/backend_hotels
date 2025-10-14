@@ -27,13 +27,14 @@ async def register_user(
         }
     ),
 ):
+
+    hashed_password = AuthService().hash_password(data.password)
+    new_user_data = UserAdd(email=data.email, hashed_password=hashed_password)
     try:
-        hashed_password = AuthService().hash_password(data.password)
-        new_user_data = UserAdd(email=data.email, hashed_password=hashed_password)
         await db.users.add(new_user_data)
         await db.commit()
     except:  # noqa: E722
-        raise HTTPException(status_code=400, detail="Пользователь с таким email уже существует")
+        raise HTTPException(status_code=409, detail="Пользователь с таким email уже существует")
 
     return {"status": "OK"}
 
