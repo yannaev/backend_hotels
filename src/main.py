@@ -1,15 +1,16 @@
 from contextlib import asynccontextmanager
-
-from fastapi import FastAPI
-import uvicorn
-from fastapi_cache import FastAPICache
-from fastapi_cache.backends.redis import RedisBackend
-
+import logging
 import sys
 from pathlib import Path
 
+from fastapi import FastAPI
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
 
 sys.path.append(str(Path(__file__).parent.parent))
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 from src.api.hotels import router as router_hotels
 from src.api.auth import router as router_auth
@@ -19,14 +20,13 @@ from src.api.facilities import router as router_facilities
 from src.api.images import router as router_images
 from src.init import redis_manager
 
-from fastapi.middleware.cors import CORSMiddleware
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
     await redis_manager.connect()
     FastAPICache.init(RedisBackend(redis_manager.redis), prefix="fastapi-cache")
+    logging.info("FastAPI Cache initialized with Redis backend")
     yield
     # Shutdown
     await redis_manager.close()

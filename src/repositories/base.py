@@ -1,3 +1,5 @@
+import logging
+
 from asyncpg import UniqueViolationError
 from pydantic import BaseModel
 from sqlalchemy import select, insert, delete, update
@@ -45,9 +47,15 @@ class BaseRepository:
         try:
             result = await self.session.execute(add_data_stmt)
         except IntegrityError as ex:
+            logging.exception(
+                f"Не удалось добавить данные в БД, входные данные={data}"
+            )
             if isinstance(ex.orig.__cause__, UniqueViolationError):
                 raise ObjectAlreadyExistsException from ex
             else:
+                logging.exception(
+                    f"Незнакомая ошибка: не удалось добавить данные в БД, входные данные={data}"
+                )
                 raise ex
 
         model = result.scalars().one()
