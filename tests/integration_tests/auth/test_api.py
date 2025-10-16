@@ -5,7 +5,7 @@ import pytest
     "email, password, status_code",
     [
         ("ivan@me.com", "1234", 200),
-        ("ivan@me.com", "1234", 400),
+        ("ivan@me.com", "1234", 409),
         ("sss@kkf.com", "abcd", 200),
         ("invalid-email", "1234", 422),
     ],
