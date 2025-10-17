@@ -13,6 +13,12 @@ class NabronirovalException(Exception):
 class ObjectNotFoundException(NabronirovalException):
     detail = 'Объект не найден'
 
+class RoomNotFoundException(ObjectNotFoundException):
+    detail = 'Номер не найден'
+
+class HotelNotFoundException(ObjectNotFoundException):
+    detail = 'Отель не найден'
+
 
 class ObjectAlreadyExistsException(NabronirovalException):
     detail = 'Похожий объект уже существует'
@@ -29,6 +35,11 @@ class WrongDatesException(NabronirovalException):
 class IntegrityErrorException(NabronirovalException):
     detail = 'Ошибка добавления'
 
+class FileSizeException(NabronirovalException):
+    detail = 'Превышен максимальный размер файла'
+
+class FileResolutionException(NabronirovalException):
+    detail = 'Превышен максимальный размер файла'
 
 class NabronirovalHTTPException(HTTPException):
     status_code = 500
@@ -46,6 +57,15 @@ class HotelNotFoundHTTPException(NabronirovalHTTPException):
 class RoomNotFoundHTTPException(NabronirovalHTTPException):
     status_code = 404
     detail = 'Номер не найден'
+
+class FileSizeHTTPException(NabronirovalHTTPException):
+    status_code = 400
+    detail = 'Превышен максимальный размер файла'
+
+
+class FileResolutionHTTPException(NabronirovalHTTPException):
+    status_code = 400
+    detail = 'Минимальное разрешение: 200x200'
 
 def check_date_to_after_date_from(date_from: date, date_to: date) -> None:
     if date_to <= date_from:
