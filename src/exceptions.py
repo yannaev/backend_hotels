@@ -58,6 +58,10 @@ class RoomNotFoundHTTPException(NabronirovalHTTPException):
     status_code = 404
     detail = 'Номер не найден'
 
+class AllRoomsAreBookedHTTPException(NabronirovalHTTPException):
+    status_code = 409
+    detail = 'Не осталось свободных номеров'
+
 class FileSizeHTTPException(NabronirovalHTTPException):
     status_code = 400
     detail = 'Превышен максимальный размер файла'
