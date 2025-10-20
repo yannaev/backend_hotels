@@ -38,8 +38,26 @@ class IntegrityErrorException(NabronirovalException):
 class FileSizeException(NabronirovalException):
     detail = 'Превышен максимальный размер файла'
 
+
 class FileResolutionException(NabronirovalException):
     detail = 'Превышен максимальный размер файла'
+
+
+class IncorrectTokenException(NabronirovalException):
+    detail = "Некорректный токен"
+
+
+class EmailNotRegisteredException(NabronirovalException):
+    detail = "Пользователь с таким email не зарегистрирован"
+
+
+class IncorrectPasswordException(NabronirovalException):
+    detail = "Пароль неверный"
+
+
+class UserAlreadyExistsException(NabronirovalException):
+    detail = "Пользователь уже существует"
+
 
 class NabronirovalHTTPException(HTTPException):
     status_code = 500
@@ -70,6 +88,30 @@ class FileSizeHTTPException(NabronirovalHTTPException):
 class FileResolutionHTTPException(NabronirovalHTTPException):
     status_code = 400
     detail = 'Минимальное разрешение: 200x200'
+
+
+class IncorrectTokenHTTPException(NabronirovalHTTPException):
+    detail = "Некорректный токен"
+
+
+class EmailNotRegisteredHTTPException(NabronirovalHTTPException):
+    status_code = 401
+    detail = "Пользователь с таким email не зарегистрирован"
+
+
+class UserEmailAlreadyExistsHTTPException(NabronirovalHTTPException):
+    status_code = 409
+    detail = "Пользователь с такой почтой уже существует"
+
+
+class IncorrectPasswordHTTPException(NabronirovalHTTPException):
+    status_code = 401
+    detail = "Пароль неверный"
+
+
+class NoAccessTokenHTTPException(NabronirovalHTTPException):
+    status_code = 401
+    detail = "Вы не предоставили токен доступа"
 
 def check_date_to_after_date_from(date_from: date, date_to: date) -> None:
     if date_to <= date_from:

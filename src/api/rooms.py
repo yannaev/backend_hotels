@@ -32,7 +32,7 @@ async def get_rooms(
 )
 async def get_room(hotel_id: int, room_id: int, db: DBDep):
     try:
-        return await RoomService(db).get_room(hotel_id)
+        return await RoomService(db).get_room(hotel_id, room_id)
     except RoomNotFoundException:
         raise RoomNotFoundHTTPException
 
@@ -44,7 +44,7 @@ async def get_room(hotel_id: int, room_id: int, db: DBDep):
 )
 async def create_room(hotel_id: int, room_data: RoomAddRequest, db: DBDep):
     try:
-        await RoomService(db).create_room(hotel_id, room_data)
+        room = await RoomService(db).create_room(hotel_id, room_data)
     except HotelNotFoundException:
         raise HotelNotFoundHTTPException
 
