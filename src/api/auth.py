@@ -48,11 +48,11 @@ async def login_user(
         openapi_examples={
             "1": {
                 "summary": "User 1",
-                "value": {"email": "123456@mail.ru", "password": "123456"},
+                "value": {"email": "123456@mail.ru", "password": "12345678"},
             },
             "2": {
                 "summary": "User 2",
-                "value": {"email": "alex@mail.ru", "password": "qwerty"},
+                "value": {"email": "alex@mail.ru", "password": "qwertyui"},
             },
         }
     ),
