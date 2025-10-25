@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 
 
 class FacilityAdd(BaseModel):
-    title: str = Field(max_length=100)
+    title: str = Field(min_length=1, max_length=100)
 
 
 class Facility(FacilityAdd):
