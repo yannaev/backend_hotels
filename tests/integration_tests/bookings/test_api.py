@@ -35,7 +35,7 @@ async def test_add_booking(room_id, date_from, date_to, status_code, db, authent
 @pytest.fixture(scope="module")
 async def delete_all_bookings():
     async for _db in get_db_null_pool():
-        await _db.bookings.delete()
+        await _db.bookings.delete_all()
         await _db.commit()
 
 

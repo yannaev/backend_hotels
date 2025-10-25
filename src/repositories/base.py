@@ -85,3 +85,6 @@ class BaseRepository:
         except IntegrityError as ex:
             if isinstance(ex.orig.__cause__, ForeignKeyViolationError):
                 raise DeleteErrorException from ex
+
+    async def delete_all(self):
+        await self.session.execute(delete(self.model))
