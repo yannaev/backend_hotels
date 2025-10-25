@@ -24,4 +24,5 @@ class RoomsOrm(Base):
     facilities: Mapped[list["FacilitiesOrm"]] = relationship(
         secondary="rooms_facilities",
         back_populates="rooms",
+        passive_deletes=True
     )
