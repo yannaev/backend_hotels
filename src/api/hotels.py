@@ -69,7 +69,10 @@ async def create_hotel(
 
 @router.put("/{hotel_id}", summary="Изменить отель", description="Изменить отель целиком")
 async def edit_hotel(hotel_id: int, hotel_data: HotelAdd, db: DBDep):
-    await HotelService(db).edit_hotel(hotel_id, hotel_data)
+    try:
+        await HotelService(db).edit_hotel(hotel_id, hotel_data)
+    except ObjectNotFoundException:
+        raise HotelNotFoundHTTPException
     return {"status": "OK"}
 
 
