@@ -82,7 +82,10 @@ async def edit_hotel(hotel_id: int, hotel_data: HotelAdd, db: DBDep):
     description="Можно поменять один или несколько параметров",
 )
 async def edit_hotel_parameter(hotel_id: int, hotel_data: HotelPatch, db: DBDep):
-    await HotelService(db).edit_hotel_parameter(hotel_id, hotel_data)
+    try:
+        await HotelService(db).edit_hotel_parameter(hotel_id, hotel_data)
+    except ObjectNotFoundException:
+        raise HotelNotFoundHTTPException
     return {"status": "OK"}
 
 
