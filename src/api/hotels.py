@@ -5,7 +5,8 @@ from fastapi_cache.decorator import cache
 
 from src.api.dependencies import PaginationDep, DBDep
 from src.exceptions import ObjectNotFoundException, HotelNotFoundHTTPException, HotelAlreadyExistsException, \
-    HotelAlreadyExistsHTTPException, HotelNotFoundException, DeleteHotelErrorException, DeleteHotelErrorHTTPException
+    HotelAlreadyExistsHTTPException, HotelNotFoundException, DeleteHotelErrorException, DeleteHotelErrorHTTPException, \
+    ObjectAlreadyExistsException
 from src.schemas.hotels import HotelPatch, HotelAdd
 from src.services.hotels import HotelService
 
@@ -73,6 +74,8 @@ async def edit_hotel(hotel_id: int, hotel_data: HotelAdd, db: DBDep):
         await HotelService(db).edit_hotel(hotel_id, hotel_data)
     except ObjectNotFoundException:
         raise HotelNotFoundHTTPException
+    except ObjectAlreadyExistsException:
+        raise HotelAlreadyExistsHTTPException
     return {"status": "OK"}
 
 
@@ -86,6 +89,8 @@ async def edit_hotel_parameter(hotel_id: int, hotel_data: HotelPatch, db: DBDep)
         await HotelService(db).edit_hotel_parameter(hotel_id, hotel_data)
     except ObjectNotFoundException:
         raise HotelNotFoundHTTPException
+    except ObjectAlreadyExistsException:
+        raise HotelAlreadyExistsHTTPException
     return {"status": "OK"}
 
 

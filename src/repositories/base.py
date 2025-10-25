@@ -75,7 +75,19 @@ class BaseRepository:
             .filter_by(**filter_by)
             .values(**data.model_dump(exclude_unset=exclude_unset))
         )
-        await self.session.execute(update_data_stmt)
+        try:
+            await self.session.execute(update_data_stmt)
+        except IntegrityError as ex:
+            logging.exception(
+                f"Не удалось добавить данные в БД, входные данные={data}"
+            )
+            if isinstance(ex.orig.__cause__, UniqueViolationError):
+                raise ObjectAlreadyExistsException from ex
+            else:
+                logging.exception(
+                    f"Незнакомая ошибка: не удалось добавить данные в БД, входные данные={data}"
+                )
+                raise ex
 
     async def delete(self, **filter_by) -> None:
         await self.get_one(**filter_by)
