@@ -22,7 +22,10 @@ async def get_rooms(
     date_from: date = Query(examples=["2025-09-10"]),
     date_to: date = Query(examples=["2025-09-20"]),
 ):
-    return await RoomService(db).get_rooms(hotel_id, date_from, date_to)
+    try:
+        return await RoomService(db).get_rooms(hotel_id, date_from, date_to)
+    except HotelNotFoundException:
+        raise HotelNotFoundHTTPException
 
 
 @router.get(
