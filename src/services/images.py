@@ -3,10 +3,10 @@ from pathlib import Path
 import aiofiles
 from fastapi import UploadFile, BackgroundTasks
 
-from src.exceptions import FileSizeException, FileResolutionException
+from src.exceptions import FileSizeException, FileResolutionException, ImageFormatException
 from src.services.base import BaseService
 from src.tasks.tasks import resize_image
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from io import BytesIO
 
 
@@ -17,7 +17,10 @@ class ImageService(BaseService):
         if len(head) > 5 * 1024 * 1024:
             raise FileSizeException
 
-        img = Image.open(BytesIO(head))
+        try:
+            img = Image.open(BytesIO(head))
+        except UnidentifiedImageError:
+            raise ImageFormatException
         width, height = img.size
         if width < 200 or height < 200:
             raise FileResolutionException

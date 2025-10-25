@@ -1,7 +1,7 @@
 from fastapi import APIRouter, UploadFile, BackgroundTasks
 
 from src.exceptions import FileSizeException, FileSizeHTTPException, FileResolutionException, \
-    FileResolutionHTTPException
+    FileResolutionHTTPException, ImageFormatException, ImageFormatHTTPException
 from src.services.images import ImageService
 
 
@@ -16,4 +16,6 @@ async def upload_image(file: UploadFile, background_tasks: BackgroundTasks):
         raise FileSizeHTTPException
     except FileResolutionException:
         raise FileResolutionHTTPException
+    except ImageFormatException:
+        raise ImageFormatHTTPException
     return {"status": "OK"}

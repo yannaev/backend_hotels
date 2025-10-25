@@ -29,6 +29,9 @@ class RoomNotFoundException(ObjectNotFoundException):
 class HotelNotFoundException(ObjectNotFoundException):
     detail = 'Отель не найден'
 
+class ImageFormatException(NabronirovalException):
+    detail = 'Неподдерживаемый формат изображения'
+
 
 class ObjectAlreadyExistsException(NabronirovalException):
     detail = 'Похожий объект уже существует'
@@ -105,6 +108,7 @@ class FileResolutionHTTPException(NabronirovalHTTPException):
 
 
 class IncorrectTokenHTTPException(NabronirovalHTTPException):
+    status_code = 401
     detail = "Некорректный токен"
 
 
@@ -139,6 +143,10 @@ class IncorrectPasswordHTTPException(NabronirovalHTTPException):
 class NoAccessTokenHTTPException(NabronirovalHTTPException):
     status_code = 401
     detail = "Вы не предоставили токен доступа"
+
+class ImageFormatHTTPException(NabronirovalHTTPException):
+    status_code = 400
+    detail = 'Неподдерживаемый формат изображения'
 
 def check_date_to_after_date_from(date_from: date, date_to: date) -> None:
     if date_to <= date_from:
