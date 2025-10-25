@@ -59,6 +59,10 @@ class UserAlreadyExistsException(NabronirovalException):
     detail = "Пользователь уже существует"
 
 
+class HotelAlreadyExistsException(NabronirovalException):
+    detail = "Отель с таким названием уже существует"
+
+
 class NabronirovalHTTPException(HTTPException):
     status_code = 500
     detail = None
@@ -96,7 +100,7 @@ class IncorrectTokenHTTPException(NabronirovalHTTPException):
 
 class EmailNotRegisteredHTTPException(NabronirovalHTTPException):
     status_code = 401
-    detail = "Пользователь с таким email не зарегистрирован"
+    detail = "Неверный email или пароль"
 
 
 class UserEmailAlreadyExistsHTTPException(NabronirovalHTTPException):
@@ -104,9 +108,14 @@ class UserEmailAlreadyExistsHTTPException(NabronirovalHTTPException):
     detail = "Пользователь с такой почтой уже существует"
 
 
+class HotelAlreadyExistsHTTPException(NabronirovalHTTPException):
+    status_code = 409
+    detail = "Отель с таким названием уже существует"
+
+
 class IncorrectPasswordHTTPException(NabronirovalHTTPException):
     status_code = 401
-    detail = "Пароль неверный"
+    detail = "Неверный email или пароль"
 
 
 class NoAccessTokenHTTPException(NabronirovalHTTPException):

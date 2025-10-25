@@ -8,5 +8,5 @@ class HotelsOrm(Base):
     __tablename__ = "hotels"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    title: Mapped[str] = mapped_column(String(100))
-    location: Mapped[str] = mapped_column()
+    title: Mapped[str] = mapped_column(String(100), unique=True)
+    location: Mapped[str] = mapped_column(String(100))

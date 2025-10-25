@@ -4,7 +4,8 @@ from fastapi import Query, APIRouter, Body
 from fastapi_cache.decorator import cache
 
 from src.api.dependencies import PaginationDep, DBDep
-from src.exceptions import ObjectNotFoundException, HotelNotFoundHTTPException
+from src.exceptions import ObjectNotFoundException, HotelNotFoundHTTPException, HotelAlreadyExistsException, \
+    HotelAlreadyExistsHTTPException, HotelNotFoundException
 from src.schemas.hotels import HotelPatch, HotelAdd
 from src.services.hotels import HotelService
 
@@ -42,7 +43,6 @@ async def get_hotel(hotel_id: int, db: DBDep):
         raise HotelNotFoundHTTPException
 
 
-# body, request body
 @router.post("", summary="Добавить отель", description="Создать и добавить новый отель")
 async def create_hotel(
     db: DBDep,
@@ -59,7 +59,11 @@ async def create_hotel(
         }
     ),
 ):
-    hotel = await HotelService(db).create_hotel(hotel_data)
+    try:
+        hotel = await HotelService(db).create_hotel(hotel_data)
+    except HotelAlreadyExistsException:
+        raise HotelAlreadyExistsHTTPException
+    
     return {"status": "OK", "data": hotel}
 
 
@@ -81,5 +85,8 @@ async def edit_hotel_parameter(hotel_id: int, hotel_data: HotelPatch, db: DBDep)
 
 @router.delete("/{hotel_id}", summary="Удалить отель", description="Удалить отель из базы по ID")
 async def delete_hotel(hotel_id: int, db: DBDep):
-    await HotelService(db).delete_hotel(hotel_id)
+    try:
+        await HotelService(db).delete_hotel(hotel_id)
+    except HotelNotFoundException:
+        raise HotelNotFoundHTTPException
     return {"status": "OK"}
