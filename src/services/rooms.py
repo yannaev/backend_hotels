@@ -24,6 +24,7 @@ class RoomService(BaseService):
         )
 
     async def get_room(self, hotel_id: int, room_id: int):
+        await HotelService(self.db).get_hotel_with_check(hotel_id=hotel_id)
         return await self.db.rooms.get_one_with_rels(id=room_id, hotel_id=hotel_id)
 
     async def create_room(self, hotel_id: int, room_data: RoomAddRequest):
@@ -41,15 +42,9 @@ class RoomService(BaseService):
         return await self.db.rooms.get_one_with_rels(id=room.id, hotel_id=hotel_id)
 
     async def update_room(self, hotel_id: int, room_id: int, room_data: RoomAddRequest):
-        try:
-            await self.db.hotels.get_one(hotel_id=hotel_id)
-        except ObjectNotFoundException as e:
-            raise HotelNotFoundException from e
+        await HotelService(self.db).get_hotel_with_check(hotel_id=hotel_id)
 
-        try:
-            await self.db.rooms.get_one(room_id=room_id)
-        except ObjectNotFoundException as e:
-            raise RoomNotFoundException from e
+        await self.get_room_with_check(room_id=room_id)
 
         _room_data = RoomAdd(hotel_id=hotel_id, **room_data.model_dump())
         await self.db.rooms.update(data=_room_data, id=room_id)
@@ -86,6 +81,6 @@ class RoomService(BaseService):
 
     async def get_room_with_check(self, room_id: int) -> Room:
         try:
-            return await self.db.rooms.get_one(room_id=room_id)
+            return await self.db.rooms.get_one(id=room_id)
         except ObjectNotFoundException:
             raise RoomNotFoundException

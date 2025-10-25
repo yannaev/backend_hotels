@@ -36,6 +36,8 @@ async def get_rooms(
 async def get_room(hotel_id: int, room_id: int, db: DBDep):
     try:
         return await RoomService(db).get_room(hotel_id, room_id)
+    except HotelNotFoundException:
+        raise HotelNotFoundHTTPException
     except RoomNotFoundException:
         raise RoomNotFoundHTTPException
 
