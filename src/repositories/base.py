@@ -1,12 +1,13 @@
 import logging
 
-from asyncpg import UniqueViolationError
+from asyncpg import UniqueViolationError, ForeignKeyViolationError
 from pydantic import BaseModel
 from sqlalchemy import select, insert, delete, update
 from sqlalchemy.exc import NoResultFound, IntegrityError
 
 from src.repositories.mappers.base import DataMapper
-from src.exceptions import ObjectNotFoundException, IntegrityErrorException, ObjectAlreadyExistsException
+from src.exceptions import ObjectNotFoundException, IntegrityErrorException, ObjectAlreadyExistsException, \
+    DeleteErrorException
 
 
 class BaseRepository:
@@ -79,4 +80,8 @@ class BaseRepository:
     async def delete(self, **filter_by) -> None:
         await self.get_one(**filter_by)
         delete_stmt = delete(self.model).filter_by(**filter_by)
-        await self.session.execute(delete_stmt)
+        try:
+            await self.session.execute(delete_stmt)
+        except IntegrityError as ex:
+            if isinstance(ex.orig.__cause__, ForeignKeyViolationError):
+                raise DeleteErrorException from ex

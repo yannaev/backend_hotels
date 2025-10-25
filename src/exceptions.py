@@ -13,6 +13,16 @@ class NabronirovalException(Exception):
 class ObjectNotFoundException(NabronirovalException):
     detail = 'Объект не найден'
 
+
+class DeleteErrorException(NabronirovalException):
+    detail = 'Ошибка удаления объекта'
+
+class DeleteRoomErrorException(NabronirovalException):
+    detail = 'Невозможно удалить номер, так как на него есть бронирования'
+
+class DeleteHotelErrorException(NabronirovalException):
+    detail = 'Невозможно удалить номер, так как на него есть бронирования'
+
 class RoomNotFoundException(ObjectNotFoundException):
     detail = 'Номер не найден'
 
@@ -111,6 +121,14 @@ class UserEmailAlreadyExistsHTTPException(NabronirovalHTTPException):
 class HotelAlreadyExistsHTTPException(NabronirovalHTTPException):
     status_code = 409
     detail = "Отель с таким названием уже существует"
+
+class DeleteRoomErrorHTTPException(NabronirovalHTTPException):
+    status_code = 409
+    detail = 'Невозможно удалить номер, так как на него есть бронирования'
+
+class DeleteHotelErrorHTTPException(NabronirovalHTTPException):
+    status_code = 409
+    detail = 'Невозможно удалить отель, так как на него есть бронирования'
 
 
 class IncorrectPasswordHTTPException(NabronirovalHTTPException):

@@ -5,7 +5,7 @@ from fastapi_cache.decorator import cache
 
 from src.api.dependencies import PaginationDep, DBDep
 from src.exceptions import ObjectNotFoundException, HotelNotFoundHTTPException, HotelAlreadyExistsException, \
-    HotelAlreadyExistsHTTPException, HotelNotFoundException
+    HotelAlreadyExistsHTTPException, HotelNotFoundException, DeleteHotelErrorException, DeleteHotelErrorHTTPException
 from src.schemas.hotels import HotelPatch, HotelAdd
 from src.services.hotels import HotelService
 
@@ -95,4 +95,6 @@ async def delete_hotel(hotel_id: int, db: DBDep):
         await HotelService(db).delete_hotel(hotel_id)
     except HotelNotFoundException:
         raise HotelNotFoundHTTPException
+    except DeleteHotelErrorException:
+        raise DeleteHotelErrorHTTPException
     return {"status": "OK"}
