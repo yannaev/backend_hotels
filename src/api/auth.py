@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Body, Response
+from fastapi import APIRouter, Body, Response, Request, HTTPException
 
 from src.api.dependencies import UserIdDep, DBDep
 from src.exceptions import UserAlreadyExistsException, UserEmailAlreadyExistsHTTPException, EmailNotRegisteredException, \
@@ -20,11 +20,11 @@ async def register_user(
         openapi_examples={
             "1": {
                 "summary": "User 1",
-                "value": {"email": "123456@mail.ru", "password": "123456"},
+                "value": {"email": "123456@mail.ru", "password": "12345678"},
             },
             "2": {
                 "summary": "User 2",
-                "value": {"email": "alex@mail.ru", "password": "qwerty"},
+                "value": {"email": "alex@mail.ru", "password": "qwertyui"},
             },
         }
     ),
@@ -73,6 +73,13 @@ async def get_me(user_id: UserIdDep, db: DBDep):
 
 
 @router.post("/logout")
-async def logout_user(response: Response):
+async def logout_user(response: Response, request: Request):
+    token = request.cookies.get("access_token")
+
+    if not token:
+        raise HTTPException(
+            status_code=400,
+            detail="Пользователь уже вышел из системы"
+        )
     response.delete_cookie("access_token")
     return {"status": "OK"}
