@@ -3,8 +3,14 @@ from datetime import date
 from fastapi import APIRouter, Query
 
 from src.api.dependencies import DBDep
-from src.exceptions import RoomNotFoundHTTPException, HotelNotFoundHTTPException, RoomNotFoundException, \
-    HotelNotFoundException, DeleteRoomErrorException, DeleteRoomErrorHTTPException
+from src.exceptions import (
+    RoomNotFoundHTTPException,
+    HotelNotFoundHTTPException,
+    RoomNotFoundException,
+    HotelNotFoundException,
+    DeleteRoomErrorException,
+    DeleteRoomErrorHTTPException,
+)
 from src.schemas.rooms import RoomAddRequest, RoomPatchRequest
 from src.services.rooms import RoomService
 

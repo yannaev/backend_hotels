@@ -22,7 +22,5 @@ class RoomsOrm(Base):
     hotel: Mapped[list["HotelsOrm"]] = relationship(back_populates="rooms")
 
     facilities: Mapped[list["FacilitiesOrm"]] = relationship(
-        secondary="rooms_facilities",
-        back_populates="rooms",
-        passive_deletes=True
+        secondary="rooms_facilities", back_populates="rooms", passive_deletes=True
     )

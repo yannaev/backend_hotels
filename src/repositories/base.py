@@ -6,8 +6,11 @@ from sqlalchemy import select, insert, delete, update
 from sqlalchemy.exc import NoResultFound, IntegrityError
 
 from src.repositories.mappers.base import DataMapper
-from src.exceptions import ObjectNotFoundException, ObjectAlreadyExistsException, \
-    DeleteErrorException
+from src.exceptions import (
+    ObjectNotFoundException,
+    ObjectAlreadyExistsException,
+    DeleteErrorException,
+)
 
 
 class BaseRepository:
@@ -48,9 +51,7 @@ class BaseRepository:
         try:
             result = await self.session.execute(add_data_stmt)
         except IntegrityError as ex:
-            logging.exception(
-                f"Не удалось добавить данные в БД, входные данные={data}"
-            )
+            logging.exception(f"Не удалось добавить данные в БД, входные данные={data}")
             if isinstance(ex.orig.__cause__, UniqueViolationError):
                 raise ObjectAlreadyExistsException from ex
             else:
@@ -78,9 +79,7 @@ class BaseRepository:
         try:
             await self.session.execute(update_data_stmt)
         except IntegrityError as ex:
-            logging.exception(
-                f"Не удалось добавить данные в БД, входные данные={data}"
-            )
+            logging.exception(f"Не удалось добавить данные в БД, входные данные={data}")
             if isinstance(ex.orig.__cause__, UniqueViolationError):
                 raise ObjectAlreadyExistsException from ex
             else:

@@ -1,7 +1,12 @@
 from datetime import date
 
-from src.exceptions import check_date_to_after_date_from, ObjectNotFoundException, \
-    RoomNotFoundException, DeleteErrorException, DeleteRoomErrorException
+from src.exceptions import (
+    check_date_to_after_date_from,
+    ObjectNotFoundException,
+    RoomNotFoundException,
+    DeleteErrorException,
+    DeleteRoomErrorException,
+)
 from src.schemas.facilities import RoomFacilityAdd
 from src.schemas.rooms import RoomAddRequest, RoomAdd, RoomPatchRequest, RoomPatch, Room
 from src.services.base import BaseService
@@ -9,14 +14,7 @@ from src.services.hotels import HotelService
 
 
 class RoomService(BaseService):
-    async def get_rooms(
-            self,
-            hotel_id: int,
-            date_from: date,
-            date_to: date
-
-
-    ):
+    async def get_rooms(self, hotel_id: int, date_from: date, date_to: date):
         await HotelService(self.db).get_hotel_with_check(hotel_id=hotel_id)
         check_date_to_after_date_from(date_from, date_to)
         return await self.db.rooms.get_filtered_by_time(
@@ -62,7 +60,9 @@ class RoomService(BaseService):
         _room_data_dict = room_data.model_dump(exclude_unset=True)
         _room_data = RoomPatch(hotel_id=hotel_id, **_room_data_dict)
 
-        await self.db.rooms.update(data=_room_data, id=room_id, hotel_id=hotel_id, exclude_unset=True)
+        await self.db.rooms.update(
+            data=_room_data, id=room_id, hotel_id=hotel_id, exclude_unset=True
+        )
 
         if "facilities_ids" in _room_data_dict:
             await self.db.rooms_facilities.update_facilities(

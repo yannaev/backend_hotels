@@ -1,7 +1,13 @@
 from fastapi import APIRouter, UploadFile, BackgroundTasks
 
-from src.exceptions import FileSizeException, FileSizeHTTPException, FileResolutionException, \
-    FileResolutionHTTPException, ImageFormatException, ImageFormatHTTPException
+from src.exceptions import (
+    FileSizeException,
+    FileSizeHTTPException,
+    FileResolutionException,
+    FileResolutionHTTPException,
+    ImageFormatException,
+    ImageFormatHTTPException,
+)
 from src.services.images import ImageService
 
 

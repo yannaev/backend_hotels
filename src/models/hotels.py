@@ -8,6 +8,7 @@ from src.database import Base
 if typing.TYPE_CHECKING:
     from src.models import RoomsOrm
 
+
 class HotelsOrm(Base):
     __tablename__ = "hotels"
 
@@ -16,7 +17,5 @@ class HotelsOrm(Base):
     location: Mapped[str] = mapped_column(String(100))
 
     rooms: Mapped[list["RoomsOrm"]] = relationship(
-        back_populates="hotel",
-        cascade="all, delete-orphan",
-        passive_deletes=True
+        back_populates="hotel", cascade="all, delete-orphan", passive_deletes=True
     )

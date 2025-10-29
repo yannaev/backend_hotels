@@ -1,19 +1,26 @@
 from datetime import date
 
-from src.exceptions import check_date_to_after_date_from, ObjectNotFoundException, HotelNotFoundException, \
-    ObjectAlreadyExistsException, HotelAlreadyExistsException, DeleteErrorException, DeleteHotelErrorException
+from src.exceptions import (
+    check_date_to_after_date_from,
+    ObjectNotFoundException,
+    HotelNotFoundException,
+    ObjectAlreadyExistsException,
+    HotelAlreadyExistsException,
+    DeleteErrorException,
+    DeleteHotelErrorException,
+)
 from src.schemas.hotels import HotelAdd, HotelPatch, Hotel
 from src.services.base import BaseService
 
 
 class HotelService(BaseService):
     async def get_hotels(
-            self,
-            pagination,
-            title: str | None,
-            location: str | None,
-            date_from: date,
-            date_to: date,
+        self,
+        pagination,
+        title: str | None,
+        location: str | None,
+        date_from: date,
+        date_to: date,
     ):
         per_page = pagination.per_page or 5
         check_date_to_after_date_from(date_from, date_to)
@@ -41,7 +48,11 @@ class HotelService(BaseService):
         await self.db.hotels.update(id=hotel_id, data=hotel_data)
         await self.db.commit()
 
-    async def edit_hotel_parameter(self,hotel_id: int, hotel_data: HotelPatch,):
+    async def edit_hotel_parameter(
+        self,
+        hotel_id: int,
+        hotel_data: HotelPatch,
+    ):
         await self.db.hotels.update(id=hotel_id, exclude_unset=True, data=hotel_data)
         await self.db.commit()
 

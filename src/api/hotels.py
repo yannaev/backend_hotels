@@ -4,9 +4,16 @@ from fastapi import Query, APIRouter, Body
 from fastapi_cache.decorator import cache
 
 from src.api.dependencies import PaginationDep, DBDep
-from src.exceptions import ObjectNotFoundException, HotelNotFoundHTTPException, HotelAlreadyExistsException, \
-    HotelAlreadyExistsHTTPException, HotelNotFoundException, DeleteHotelErrorException, DeleteHotelErrorHTTPException, \
-    ObjectAlreadyExistsException
+from src.exceptions import (
+    ObjectNotFoundException,
+    HotelNotFoundHTTPException,
+    HotelAlreadyExistsException,
+    HotelAlreadyExistsHTTPException,
+    HotelNotFoundException,
+    DeleteHotelErrorException,
+    DeleteHotelErrorHTTPException,
+    ObjectAlreadyExistsException,
+)
 from src.schemas.hotels import HotelPatch, HotelAdd
 from src.services.hotels import HotelService
 
@@ -27,13 +34,7 @@ async def get_hotels(
     date_from: date = Query(examples=["2024-08-01"]),
     date_to: date = Query(examples=["2024-08-10"]),
 ):
-    return await HotelService(db).get_hotels(
-        pagination,
-        title,
-        location,
-        date_from,
-        date_to
-    )
+    return await HotelService(db).get_hotels(pagination, title, location, date_from, date_to)
 
 
 @router.get("/{hotel_id}", summary="Получить отель по ID", description="Получить один отель")
@@ -64,7 +65,7 @@ async def create_hotel(
         hotel = await HotelService(db).create_hotel(hotel_data)
     except HotelAlreadyExistsException:
         raise HotelAlreadyExistsHTTPException
-    
+
     return {"status": "OK", "data": hotel}
 
 

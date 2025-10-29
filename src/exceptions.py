@@ -4,56 +4,62 @@ from fastapi import HTTPException
 
 
 class NabronirovalException(Exception):
-    detail = 'Неожиданная ошибка'
+    detail = "Неожиданная ошибка"
 
     def __init__(self, *args, **kwargs):
         super().__init__(self.detail, *args, **kwargs)
 
 
 class ObjectNotFoundException(NabronirovalException):
-    detail = 'Объект не найден'
+    detail = "Объект не найден"
 
 
 class DeleteErrorException(NabronirovalException):
-    detail = 'Ошибка удаления объекта'
+    detail = "Ошибка удаления объекта"
+
 
 class DeleteRoomErrorException(NabronirovalException):
-    detail = 'Невозможно удалить номер, так как на него есть бронирования'
+    detail = "Невозможно удалить номер, так как на него есть бронирования"
+
 
 class DeleteHotelErrorException(NabronirovalException):
-    detail = 'Невозможно удалить номер, так как на него есть бронирования'
+    detail = "Невозможно удалить номер, так как на него есть бронирования"
+
 
 class RoomNotFoundException(ObjectNotFoundException):
-    detail = 'Номер не найден'
+    detail = "Номер не найден"
+
 
 class HotelNotFoundException(ObjectNotFoundException):
-    detail = 'Отель не найден'
+    detail = "Отель не найден"
+
 
 class ImageFormatException(NabronirovalException):
-    detail = 'Неподдерживаемый формат изображения'
+    detail = "Неподдерживаемый формат изображения"
 
 
 class ObjectAlreadyExistsException(NabronirovalException):
-    detail = 'Похожий объект уже существует'
+    detail = "Похожий объект уже существует"
 
 
 class AllRoomsAreBookedException(NabronirovalException):
-    detail = 'Не осталось свободных номеров'
+    detail = "Не осталось свободных номеров"
 
 
 class WrongDatesException(NabronirovalException):
-    detail = 'Дата выезда должна быть больше даты заезда'
+    detail = "Дата выезда должна быть больше даты заезда"
 
 
 class IntegrityErrorException(NabronirovalException):
-    detail = 'Ошибка добавления'
+    detail = "Ошибка добавления"
+
 
 class FileSizeException(NabronirovalException):
-    detail = 'Превышен максимальный размер файла'
+    detail = "Превышен максимальный размер файла"
 
 
 class FileResolutionException(NabronirovalException):
-    detail = 'Превышен максимальный размер файла'
+    detail = "Превышен максимальный размер файла"
 
 
 class IncorrectTokenException(NabronirovalException):
@@ -86,25 +92,27 @@ class NabronirovalHTTPException(HTTPException):
 
 class HotelNotFoundHTTPException(NabronirovalHTTPException):
     status_code = 404
-    detail = 'Отель не найден'
+    detail = "Отель не найден"
 
 
 class RoomNotFoundHTTPException(NabronirovalHTTPException):
     status_code = 404
-    detail = 'Номер не найден'
+    detail = "Номер не найден"
+
 
 class AllRoomsAreBookedHTTPException(NabronirovalHTTPException):
     status_code = 409
-    detail = 'Не осталось свободных номеров'
+    detail = "Не осталось свободных номеров"
+
 
 class FileSizeHTTPException(NabronirovalHTTPException):
     status_code = 400
-    detail = 'Превышен максимальный размер файла'
+    detail = "Превышен максимальный размер файла"
 
 
 class FileResolutionHTTPException(NabronirovalHTTPException):
     status_code = 400
-    detail = 'Минимальное разрешение: 200x200'
+    detail = "Минимальное разрешение: 200x200"
 
 
 class IncorrectTokenHTTPException(NabronirovalHTTPException):
@@ -126,13 +134,15 @@ class HotelAlreadyExistsHTTPException(NabronirovalHTTPException):
     status_code = 409
     detail = "Отель с таким названием уже существует"
 
+
 class DeleteRoomErrorHTTPException(NabronirovalHTTPException):
     status_code = 409
-    detail = 'Невозможно удалить номер, так как на него есть бронирования'
+    detail = "Невозможно удалить номер, так как на него есть бронирования"
+
 
 class DeleteHotelErrorHTTPException(NabronirovalHTTPException):
     status_code = 409
-    detail = 'Невозможно удалить отель, так как на него есть бронирования'
+    detail = "Невозможно удалить отель, так как на него есть бронирования"
 
 
 class IncorrectPasswordHTTPException(NabronirovalHTTPException):
@@ -144,9 +154,11 @@ class NoAccessTokenHTTPException(NabronirovalHTTPException):
     status_code = 401
     detail = "Вы не предоставили токен доступа"
 
+
 class ImageFormatHTTPException(NabronirovalHTTPException):
     status_code = 400
-    detail = 'Неподдерживаемый формат изображения'
+    detail = "Неподдерживаемый формат изображения"
+
 
 def check_date_to_after_date_from(date_from: date, date_to: date) -> None:
     if date_to <= date_from:

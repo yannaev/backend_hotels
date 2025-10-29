@@ -1,8 +1,14 @@
 from fastapi import APIRouter, Body, Response, Request, HTTPException
 
 from src.api.dependencies import UserIdDep, DBDep
-from src.exceptions import UserAlreadyExistsException, UserEmailAlreadyExistsHTTPException, EmailNotRegisteredException, \
-    EmailNotRegisteredHTTPException, IncorrectPasswordException, IncorrectPasswordHTTPException
+from src.exceptions import (
+    UserAlreadyExistsException,
+    UserEmailAlreadyExistsHTTPException,
+    EmailNotRegisteredException,
+    EmailNotRegisteredHTTPException,
+    IncorrectPasswordException,
+    IncorrectPasswordHTTPException,
+)
 from src.schemas.users import UserRequestAdd
 from src.services.auth import AuthService
 
@@ -29,13 +35,10 @@ async def register_user(
         }
     ),
 ):
-
-
     try:
         await AuthService(db).register_user(data)
     except UserAlreadyExistsException:
         raise UserEmailAlreadyExistsHTTPException
-
 
     return {"status": "OK"}
 
@@ -67,7 +70,7 @@ async def login_user(
     return {"access_token": access_token}
 
 
-@router.get("/me", summary='Получение информации о текущем пользователе')
+@router.get("/me", summary="Получение информации о текущем пользователе")
 async def get_me(user_id: UserIdDep, db: DBDep):
     return await AuthService(db).get_one_or_none_user(user_id)
 
@@ -77,9 +80,6 @@ async def logout_user(response: Response, request: Request):
     token = request.cookies.get("access_token")
 
     if not token:
-        raise HTTPException(
-            status_code=400,
-            detail="Пользователь уже вышел из системы"
-        )
+        raise HTTPException(status_code=400, detail="Пользователь уже вышел из системы")
     response.delete_cookie("access_token")
     return {"status": "OK"}

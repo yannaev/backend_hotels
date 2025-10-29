@@ -1,5 +1,9 @@
-from src.exceptions import ObjectNotFoundException, AllRoomsAreBookedException, \
-    check_date_to_after_date_from, RoomNotFoundException
+from src.exceptions import (
+    ObjectNotFoundException,
+    AllRoomsAreBookedException,
+    check_date_to_after_date_from,
+    RoomNotFoundException,
+)
 from src.schemas.bookings import BookingAddRequest, BookingAdd
 from src.schemas.rooms import Room
 from src.services.base import BaseService
