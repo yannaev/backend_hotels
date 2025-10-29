@@ -6,7 +6,7 @@ from sqlalchemy import select, insert, delete, update
 from sqlalchemy.exc import NoResultFound, IntegrityError
 
 from src.repositories.mappers.base import DataMapper
-from src.exceptions import ObjectNotFoundException, IntegrityErrorException, ObjectAlreadyExistsException, \
+from src.exceptions import ObjectNotFoundException, ObjectAlreadyExistsException, \
     DeleteErrorException
 
 

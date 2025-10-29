@@ -2,7 +2,6 @@ from datetime import date
 
 from sqlalchemy import select
 
-from src.exceptions import WrongDatesException
 from src.models.hotels import HotelsOrm
 from src.models.rooms import RoomsOrm
 from src.repositories.base import BaseRepository
